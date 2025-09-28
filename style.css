@@ -324,6 +324,7 @@ main .insights .sales svg circle{
 }
 
 main .insights .expenses svg circle{
+     stroke: var(--color-danger);
      stroke-dashoffset: 20;
     stroke-dasharray: 80;
 }
@@ -619,4 +620,5 @@ main table tbody td{
     }
 
 }
+
 
