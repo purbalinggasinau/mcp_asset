@@ -278,7 +278,7 @@ main .insights > div.income span{
     background: var(--color-succes);
 }
 
-main .insights > div.income span{
+main .insights > div.income2 span{
     background: var(--color-danger);
 }
 
@@ -624,6 +624,7 @@ main table tbody td{
     }
 
 }
+
 
 
 
