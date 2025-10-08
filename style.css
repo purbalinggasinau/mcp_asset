@@ -579,7 +579,7 @@ main table tbody td{
         width: 100%;
     }
     main .recent-orders table{
-        width: 100%;
+        width: 50%;
         margin: 0;
     }
     .right{
@@ -624,6 +624,7 @@ main table tbody td{
     }
 
 }
+
 
 
 
