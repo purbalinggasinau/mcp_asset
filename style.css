@@ -522,7 +522,8 @@ main table tbody td{
 
      }
      main .recent-orders table{
-        width: 56vw;
+        width: 46vw;
+        text-align: left;
      }
 }
 
@@ -624,6 +625,7 @@ main table tbody td{
     }
 
 }
+
 
 
 
