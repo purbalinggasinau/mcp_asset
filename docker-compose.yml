@@ -1,0 +1,59 @@
+services:
+  waha:
+    image: devlikeapro/waha:latest
+    container_name: waha
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"   # hanya bisa diakses dari localhost server, aman dari akses luar langsung
+    environment:
+      # Engine ringan (native WebSocket, TANPA Chromium) — ini kunci hemat RAM
+      WHATSAPP_DEFAULT_ENGINE: NOWEB
+ 
+      # Amankan API dengan key sendiri (ganti dengan string acak yang kuat)
+      WAHA_API_KEY: "${WAHA_API_KEY}"
+      WAHA_API_KEY_PLAIN: "${WAHA_API_KEY}"
+ 
+      # /health dan /ping dikecualikan dari cek API key supaya Docker healthcheck bisa jalan
+      WAHA_API_KEY_EXCLUDE_PATH: "health,ping"
+ 
+      # Dashboard bawaan WAHA (opsional, bisa dimatikan kalau tidak perlu)
+      WAHA_DASHBOARD_ENABLED: "true"
+      WAHA_DASHBOARD_USERNAME: "${WAHA_DASHBOARD_USER}"
+      WAHA_DASHBOARD_PASSWORD: "${WAHA_DASHBOARD_PASS}"
+ 
+      # Swagger UI (di path root /) punya auth TERPISAH dari dashboard
+      WHATSAPP_SWAGGER_USERNAME: "${WAHA_DASHBOARD_USER}"
+      WHATSAPP_SWAGGER_PASSWORD: "${WAHA_DASHBOARD_PASS}"
+ 
+      # Webhook ke Laravel kamu untuk pesan masuk (sesuaikan URL)
+      WHATSAPP_HOOK_URL: "${LARAVEL_WEBHOOK_URL}"
+      WHATSAPP_HOOK_EVENTS: "message,session.status"
+ 
+    volumes:
+      # Data sesi WhatsApp disimpan persisten di sini — TIDAK hilang walau container restart
+      - waha_sessions:/app/.sessions
+ 
+    # Batas RAM keras — mencegah WAHA menghabiskan semua RAM server
+    # dan bikin proses lain (VS Code Server, Laravel, dll) ikut ke-OOM
+    mem_limit: 512m
+    memswap_limit: 768m
+ 
+    # Batas CPU (opsional, sesuaikan dengan jumlah core VM kamu)
+    cpus: "1.0"
+ 
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+ 
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+ 
+volumes:
+  waha_sessions:
+    driver: local
